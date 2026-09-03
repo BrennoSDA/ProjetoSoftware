@@ -1,5 +1,9 @@
 # 📐 Documento de Modelo de Domínio (DDD)
 
+**Semana:** [Semana 7 — Consolidação e Especificação Técnica](../README.md)
+**Responde a:** entregável implícito das Semanas 6-7 em [estudo_caso5.md](../../../estudo_caso5.md) (template padrão em [template_modelo_dominio.md](../../../template_modelo_dominio.md)); também cobre o Diagrama de Classes de Domínio, entrega oficial da Semana 7 conforme [diagramasUML.md](../../../diagramasUML.md)
+**Status:** Feito
+
 **Projeto:** Conselheiro Financeiro Comportamental
 
 **Módulo / Contexto:** Aconselhamento Comportamental & Open Finance
@@ -8,9 +12,9 @@
 
 **Data:** 2026-09-02
 
-**Autores:** Grupo 5 (Brenno, Joel, Ian, Davi) — a partir do template em [template_modelo_dominio.md](../../template_modelo_dominio.md) e dos requisitos em [README.md](../../README.md)
+**Autores:** Grupo 5 (Brenno, Joel, Ian, Davi) — a partir do template em [template_modelo_dominio.md](../../../template_modelo_dominio.md) e dos requisitos em [README.md](../../../README.md)
 
-> Este documento preenche o template padrão do grupo para o Estudo de Caso 5, entregável previsto para as Semanas 6-7 em [estudo_caso5.md](../../estudo_caso5.md). É um rascunho técnico derivado diretamente dos Requisitos Funcionais (RF), Não Funcionais (RNF), Regras de Negócio (RN) e cláusulas LGPD já definidos pelo professor em `README.md`. Nomes de entidades, agregados e serviços são propostas de modelagem, não decisões de produto — devem ser validados/ajustados pela equipe antes da entrega.
+> Este documento preenche o template padrão do grupo para o Estudo de Caso 5, entregável previsto para as Semanas 6-7 em [estudo_caso5.md](../../../estudo_caso5.md). É um rascunho técnico derivado diretamente dos Requisitos Funcionais (RF), Não Funcionais (RNF), Regras de Negócio (RN) e cláusulas LGPD já definidos pelo professor em `README.md`. Nomes de entidades, agregados e serviços são propostas de modelagem, não decisões de produto — devem ser validados/ajustados pela equipe antes da entrega.
 
 ---
 
@@ -70,7 +74,7 @@
 #### `ConsentimentoOpenFinance`
 * **ID:** `consentimentoId` (associado a `usuarioId`)
 * **Atributos:** `status: StatusConsentimento`, `dataRevogacao`, `dataLimiteOcultacao` (+30 dias, RN01)
-* **Ciclo de Vida:** `[Ativo] → [Revogado] → [DadosOcultos]` (ver diagrama de máquina de estados em [../semana-06](../semana-06/README.md))
+* **Ciclo de Vida:** `[Ativo] → [Revogado] → [DadosOcultos]` (ver [diagrama de máquina de estados, Semana 6](../../semana-06/entregaveis/diagrama-maquina-estados.md))
 * **Comportamentos:** `revogar()`, `restabelecer()`
 
 #### `Transacao`
@@ -146,7 +150,7 @@
 
 ### 3.4. Serviços de Domínio
 
-* **`DetectorDePadraoDeImpulso`** — Entradas: histórico de `Transacao`. Responsabilidade: identificar recorrência de dia/horário/categoria e produzir `JanelaHorariaHabitual` (ver fluxograma em [../semana-04](../semana-04/README.md)).
+* **`DetectorDePadraoDeImpulso`** — Entradas: histórico de `Transacao`. Responsabilidade: identificar recorrência de dia/horário/categoria e produzir `JanelaHorariaHabitual` (ver [fluxograma, Semana 4](../../semana-04/entregaveis/fluxograma-motor-classificacao.md)).
 * **`MotorDeClassificacaoDeTransacoes` (IA)** — Entradas: `Transacao` bruta. Responsabilidade: categorizar automaticamente com precisão-alvo >92% (RNF-08); se não conseguir, delega para o estado `AClassificar`.
 * **`CalculadoraDeImpactoDeMeta`** — Entradas: `MetaFinanceira`, `ValorMonetario` do gasto simulado. Responsabilidade: recalcular prazo estimado da meta.
 * **`CalculadoraDeScoreComportamental`** — Entradas: `Transacao[]` da semana, `PerfilComportamental`. Responsabilidade: computar a pontuação semanal, respeitando a invariante de suspensão por RN04.
@@ -175,7 +179,7 @@
 * **RN03 (Margem de Segurança):** ver `ValidadorDeReservaMinima` e invariante #3 do agregado `MetaFinanceira`.
 * **RN04 (Classificação de Erros):** ver ciclo de vida de `Transacao` e invariante #2 do agregado `PerfilUsuario`.
 * **RN05 (Privacidade de Casal):** ver `ConfiguracaoPrivacidadeIndividual` e invariante #5 do agregado `ContaConjunta`.
-* **LGPD-01 / LGPD-02:** aplicam-se transversalmente ao `ConsentimentoOpenFinance` (finalidade vinculada — proibição de uso para credit scoring) e ao processo de resposta a incidentes especificado em [../semana-01](../semana-01/README.md).
+* **LGPD-01 / LGPD-02:** aplicam-se transversalmente ao `ConsentimentoOpenFinance` (finalidade vinculada — proibição de uso para credit scoring) e ao processo de resposta a incidentes especificado em [Semana 1](../../semana-01/entregaveis/politica-credit-scoring-plano-incidentes.md).
 
 ---
 
@@ -193,4 +197,4 @@
 | `ScoreComportamental` | RF09 | SCR-09 | Consulta do dashboard semanal. |
 | `ContaConjunta` | RF10 | SCR-10 | Ativação do toggle de privacidade individual. |
 
-> Nota: os IDs de tela (SCR-XX) são referências lógicas para uso futuro quando as telas reais forem produzidas (Figma, Semanas 4-11); nenhuma tela real existe ainda — ver [BACKLOG.md](../../BACKLOG.md).
+> Nota: os IDs de tela (SCR-XX) são referências lógicas para uso futuro quando as telas reais forem produzidas (Figma, Semanas 4-11); nenhuma tela real existe ainda — ver [BACKLOG.md](../../../BACKLOG.md).

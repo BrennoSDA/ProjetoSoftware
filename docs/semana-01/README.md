@@ -4,81 +4,29 @@
 **Fonte do enunciado:** [estudo_caso5.md](../../estudo_caso5.md), seção "Semana 1 (Iteração 1)"
 **Equipe:** Brenno & Joel (AR1/AR2 — elicitação) · Ian & Davi (D1/D2 — design)
 
-> <!-- ATENÇÃO: os papéis AR1=Brenno, AR2=Joel, D1=Ian, D2=Davi foram atribuídos por decisão da equipe em 2026-09-02; ajustar aqui se a divisão real for outra. -->
+> Papéis AR1=Brenno, AR2=Joel, D1=Ian, D2=Davi atribuídos por decisão da equipe.
 
-## Status dos entregáveis
+## Entregáveis
 
-| # | Entregável (conforme estudo_caso5.md) | Status | Observação |
+| # | Entregável | Responde a | Status |
 | --- | --- | --- | --- |
-| 1 | Termos de Uso e Especificação do Open Finance sem Retenção de Senhas (RNF-01) | Parcial | Especificação técnica pronta abaixo; texto jurídico de Termos de Uso não produzido (requer revisão jurídica — ver [BACKLOG.md](../../BACKLOG.md)). |
-| 2 | Política de Veto ao Credit Scoring Comercial (LGPD-01) e Plano de Incidentes (LGPD-02) | Parcial | Especificação técnica/de processo pronta abaixo; validação jurídica formal e prazo legal exato de notificação à ANPD ficam pendentes. |
-| 3 | Guia de Design para Daltonistas (RNF-10) | Feito | Ver seção 3 abaixo. |
-| 4 | Diagramas UML, "se for o caso" | Não se aplica | Pela matriz de [diagramasUML.md](../../diagramasUML.md), nenhum diagrama tem entrega prevista na Semana 1 (Casos de Uso é Semana 2). |
+| 1 | [Especificação Open Finance sem Retenção de Senhas](entregaveis/especificacao-open-finance-sem-senha.md) | Entregável 1 do enunciado (RNF-01) | Pronto, minuta de Termos de Uso incluída — confirmar com o professor se é suficiente |
+| 2 | [Política de Veto ao Credit Scoring e Plano de Incidentes](entregaveis/politica-credit-scoring-plano-incidentes.md) | Entregável 2 do enunciado (LGPD-01, LGPD-02) | Feito — base LGPD citada (art. 48 + Resolução CD/ANPD nº 15/2024); sem validação jurídica profissional |
+| 3 | [Guia de Design para Daltonistas](entregaveis/guia-acessibilidade-daltonismo.md) | Entregável 3 do enunciado (RNF-10) | Feito |
+| 4 | Diagramas UML | Entregável 4 do enunciado ("se for o caso") | Não se aplica — pela matriz de [diagramasUML.md](../../diagramasUML.md), nenhum diagrama tem entrega prevista na Semana 1 (Casos de Uso é Semana 2) |
+| 5 | [Benchmarking e Arquitetura de Informação](entregaveis/benchmarking-arquitetura-informacao.md) | Material de apoio das atividades de D1/D2 — não é um item numerado do enunciado | Feito — benchmarking real (Nubank, Klarna, Cleo) com fontes citadas |
 
----
+## O que mudou
 
-## 1. Especificação Técnica: Open Finance sem Retenção de Senhas (RNF-01)
+* Todos os itens são conteúdo original desta semana (primeira semana do projeto, sem histórico anterior a alterar); esta passada **completou** o que estava parcial, sem reescrever o que já estava pronto:
+  * Item 1: adicionada uma seção "Termos de Uso" (minuta de estudante, explicitamente marcada como não sendo validação jurídica real), baseada no conteúdo já existente na especificação técnica.
+  * Item 2: adicionado o prazo legal de comunicação de incidente (LGPD art. 48 + Resolução CD/ANPD nº 15/2024, com fontes citadas) e um texto formal de notificação aos usuários afetados (minuta de estudante).
+  * Item 5: substituído o rascunho incompleto por um benchmarking real de Nubank, Klarna e Cleo (funcionalidades de Open Finance/orçamento, UX de consentimento e privacidade, tom de comunicação), com fontes citadas; a arquitetura de informação textual foi mantida como estava.
+* Item 5 segue como entregável extra de apoio (decisão da equipe), já que representa trabalho real produzido mesmo não constando como item numerado do enunciado.
 
-> Responsável pela elicitação: Brenno (AR1)
+## Pendências
 
-**Requisito:** "O sistema deve utilizar infraestrutura certificada de Open Finance e nunca ter acesso às senhas de movimentação bancária do usuário." (README.md, RNF-01)
-
-* **Fluxo de autorização:** o app nunca coleta usuário/senha do banco. A conexão ocorre via protocolo OAuth2/Open Finance Brasil, redirecionando o usuário para o ambiente autenticado do próprio banco; o app recebe apenas um token de consentimento com escopo limitado (leitura de extrato/faturas).
-* **Dados nunca armazenados pelo app:** senha bancária, PIN, dados de cartão físico completos.
-* **Dados armazenados:** token de consentimento (criptografado, ver RNF-09), identificador da instituição, escopo autorizado, data de expiração/revogação.
-* **Certificação exigida do provedor:** homologação oficial no Open Finance Brasil (Diretório de Participantes) — critério de seleção de fornecedor, não decisão técnica desta equipe.
-* **Regra associada:** RN01 (revogação) — ver seção 2 abaixo para o fluxo de congelamento.
-
-<!-- ATENÇÃO: confirmar com a equipe/professor se é necessário produzir também o texto legal de "Termos de Uso" (contrato de adesão do usuário) nesta entrega, ou se essa especificação técnica é suficiente para a Semana 1. -->
-
-## 2. Especificação de Processo: Veto ao Credit Scoring (LGPD-01) e Plano de Incidentes (LGPD-02)
-
-> Responsável pela elicitação: Joel (AR2)
-
-### 2.1 Veto ao Credit Scoring (LGPD-01)
-* **Regra:** dados bancários captados via Open Finance só podem ser usados para gestão orçamentária e aconselhamento comportamental do próprio usuário.
-* **Proibição explícita:** é vedado usar esses dados para gerar perfis de crédito (*credit scoring*) comercializados a bancos parceiros sem autorização específica e separada do usuário.
-* **Implementação sugerida:** flag de finalidade (`purpose = "aconselhamento_comportamental"`) associada a todo dado ingerido via Open Finance; qualquer processo de exportação/agregação para terceiros deve validar essa flag antes de liberar dados, e falhar por padrão (*deny by default*) na ausência de autorização específica.
-
-### 2.2 Plano de Incidentes (LGPD-02)
-* **Gatilho:** qualquer suspeita de vazamento de dados ou acesso não autorizado à base de transações.
-* **Passos do plano (rascunho técnico):**
-  1. Isolamento imediato do componente/serviço afetado (kill-switch).
-  2. Avaliação de escopo do incidente (quantidade de usuários/dados afetados).
-  3. Notificação à ANPD e aos usuários afetados "no prazo legal determinado" (README.md, LGPD-02).
-  4. Registro do incidente e ações corretivas em log de auditoria imutável.
-
-<!-- ATENÇÃO: o prazo legal exato de notificação à ANPD e o texto formal de notificação aos usuários dependem de revisão jurídica que não foi feita nesta sessão — confirmar antes de publicar como política oficial. Ver item correspondente em BACKLOG.md. -->
-
-## 3. Guia de Design para Daltonistas (RNF-10)
-
-> Responsável: Ian & Davi (D1/D2)
-
-### Diretrizes obrigatórias
-1. **Nunca comunicar estado apenas por cor** — todo indicador (saldo, alerta, bloqueio) combina cor + ícone + rótulo de texto.
-2. **Contraste mínimo WCAG 2.1 AA** — razão ≥ 4.5:1 para texto normal, ≥ 3:1 para ícones/gráficos informativos.
-3. **Evitar pares vermelho-verde como único diferenciador** (deuteranopia/protanopia) — preferir azul/laranja ou padrões (hachuras/tracejados) em gráficos.
-4. **Testar com simuladores** (Stark, Color Oracle) antes da entrega Hi-Fi (Semanas 8-9).
-
-### Aplicação nos componentes do app
-
-| Componente | Cor | Ícone Redundante | Texto |
-| --- | --- | --- | --- |
-| Card de Meta no prazo | Verde | Seta ↑ | "No prazo" |
-| Card de Meta atrasada | Laranja | Relógio ⏱ | "Atrasada em X dias" |
-| Alerta de Reserva Mínima (RN03) | Vermelho | Cadeado 🔒 | "Aporte bloqueado" |
-| Transação "A Classificar" (RN04) | Azul/Cinza | Interrogação ❓ | "A Classificar" |
-| Notificação Gatilho Antigasto (RN02) | Roxo/Neutro | Sino 🔔 | "Alerta preventivo" |
-
-Este guia alimenta o Design System "Mindful Finance UX" da Semana 6 (ver [../semana-06](../semana-06/README.md)).
-
-## 4. Benchmarking e Arquitetura de Informação (D1/D2)
-
-<!-- ATENÇÃO: benchmarking de concorrentes (Nubank, Klarna, Cleo) depende de pesquisa de mercado atualizada (screenshots/capturas reais dos apps) que não foi feita nesta sessão. A arquitetura de informação abaixo é um rascunho textual inicial, não substitui a pesquisa. -->
-
-Rascunho inicial de arquitetura de informação (IA) do app, por área:
-* **Home:** feed de transações + atalho de registro manual + resumo de metas.
-* **Metas:** lista de metas, simulador de impacto, meta conjunta.
-* **Comportamento:** score semanal, quiz de perfil, trilhas gamificadas.
-* **Conexões:** status Open Finance, gestão de consentimento, contas conectadas.
-* **Configurações:** privacidade, acessibilidade, notificações.
+* **Confirmar com o professor/equipe** se a minuta de Termos de Uso do item 1 é suficiente para a entrega, ou se uma validação jurídica formal é exigida.
+* **Confirmar com Joel, Ian e Davi** a nota de atribuição de papéis (AR1/AR2/D1/D2) na linha 7 deste README antes do envio — ela não foi alterada nesta passada, só sinalizada aqui.
+* Validação jurídica profissional real dos itens 1 e 2 (a minuta/citação acadêmica não substitui um advogado) — fora do escopo do curso, ver [BACKLOG.md](../../BACKLOG.md).
+* Screenshots/capturas reais dos apps concorrentes no benchmarking do item 5 (a pesquisa usou apenas fontes publicadas, não uso direto dos apps) — ver [BACKLOG.md](../../BACKLOG.md).
